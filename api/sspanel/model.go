@@ -45,6 +45,7 @@ type UserResponse struct {
 	DeviceLimit int     `json:"node_iplimit"`
 	UUID        string  `json:"uuid"`
 	AliveIP     int     `json:"alive_ip"`
+	HttPasswd   string  `json:"httpasswd"`
 }
 
 // Response is the common response

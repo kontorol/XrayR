@@ -133,8 +133,11 @@ func InboundBuilder(config *Config, nodeInfo *api.NodeInfo, tag string) (*core.I
 			Host:        "v1.mux.cool",
 			NetworkList: []string{"tcp", "udp"},
 		}
+	case "http":
+		protocol = "http"
+		proxySetting = &conf.HTTPServerConfig{}
 	default:
-		return nil, fmt.Errorf("unsupported node type: %s, Only support: V2ray, Trojan, Shadowsocks, and Shadowsocks-Plugin", nodeInfo.NodeType)
+		return nil, fmt.Errorf("unsupported node type: %s, Only support: V2ray, Trojan, Shadowsocks, Shadowsocks-Plugin and Http", nodeInfo.NodeType)
 	}
 
 	setting, err := json.Marshal(proxySetting)

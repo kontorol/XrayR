@@ -14,6 +14,7 @@ import (
 	"github.com/xtls/xray-core/proxy/shadowsocks_2022"
 	"github.com/xtls/xray-core/proxy/trojan"
 	"github.com/xtls/xray-core/proxy/vless"
+	H "github.com/xtls/xray-core/proxy/http"
 
 	"github.com/XrayR-project/XrayR/api"
 )
@@ -52,6 +53,28 @@ func (c *Controller) buildVlessUser(userInfo *[]api.UserInfo) (users []*protocol
 			Level:   0,
 			Email:   c.buildUserTag(&user),
 			Account: serial.ToTypedMessage(vlessAccount),
+		}
+	}
+	return users
+}
+
+func (c *Controller) buildHttpUser(userInfo *[]api.UserInfo) (users []*protocol.User) {
+	users = make([]*protocol.User, len(*userInfo))
+	for i, user := range *userInfo {
+		e := c.buildUserTag(&user)
+		
+		if user.HttPasswd == "" {
+			user.HttPasswd = user.Passwd
+		}
+
+		httpAccount := &H.Account{
+			Username: e,
+			Password: user.HttPasswd,
+		}
+		users[i] = &protocol.User{
+			Level:   0,
+			Email:   e,
+			Account: serial.ToTypedMessage(httpAccount),
 		}
 	}
 	return users

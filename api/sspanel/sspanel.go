@@ -719,6 +719,7 @@ func (c *APIClient) ParseUserListResponse(userInfoResponse *[]UserResponse) (*[]
 			UID:         user.ID,
 			UUID:        user.UUID,
 			Passwd:      user.Passwd,
+			HttPasswd:   user.HttPasswd,
 			SpeedLimit:  speedLimit,
 			DeviceLimit: deviceLimit,
 			Port:        user.Port,
@@ -785,6 +786,17 @@ func (c *APIClient) ParseSSPanelNodeInfo(nodeInfoResponse *NodeInfoResponse) (*a
 		if nodeConfig.Security != "" {
 			tlsType = nodeConfig.Security // try to read security from config
 		}
+
+		if tlsType == "tls" || tlsType == "xtls" {
+			enableTLS = true
+		}
+
+		// Select transport protocol
+		if nodeConfig.Network != "" {
+			transportProtocol = nodeConfig.Network // try to read transport protocol from config
+		}
+	case "Http":
+		transportProtocol = "tcp"
 
 		// Select transport protocol
 		if nodeConfig.Network != "" {
