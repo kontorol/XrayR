@@ -21,11 +21,12 @@ require (
 	github.com/sagernet/sing v0.2.13
 	github.com/sagernet/sing-shadowsocks v0.2.5
 	github.com/shirou/gopsutil/v3 v3.23.9
+	github.com/spf13/cobra v1.1.1
 	github.com/spf13/viper v1.17.0
 	github.com/stretchr/testify v1.8.4
 	github.com/xtls/xray-core v1.8.4
 	golang.org/x/crypto v0.14.0
-	golang.org/x/net v0.16.0
+	golang.org/x/net v0.17.0
 	golang.org/x/time v0.3.0
 	google.golang.org/protobuf v1.31.0
 )
@@ -113,6 +114,7 @@ require (
 	github.com/hashicorp/go-retryablehttp v0.7.4 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/iij/doapi v0.0.0-20190504054126-0bbf12d6d7df // indirect
+	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/infobloxopen/infoblox-go-client v1.1.1 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
