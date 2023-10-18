@@ -62,14 +62,10 @@ func (c *Controller) buildHttpUser(userInfo *[]api.UserInfo) (users []*protocol.
 	users = make([]*protocol.User, len(*userInfo))
 	for i, user := range *userInfo {
 		e := c.buildUserTag(&user)
-		
-		if user.HttPasswd == "" {
-			user.HttPasswd = user.Passwd
-		}
 
 		httpAccount := &H.Account{
 			Username: e,
-			Password: user.HttPasswd,
+			Password: user.Passwd,
 		}
 		users[i] = &protocol.User{
 			Level:   0,

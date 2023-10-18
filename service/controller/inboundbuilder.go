@@ -133,7 +133,7 @@ func InboundBuilder(config *Config, nodeInfo *api.NodeInfo, tag string) (*core.I
 			Host:        "v1.mux.cool",
 			NetworkList: []string{"tcp", "udp"},
 		}
-	case "http":
+	case "Http":
 		protocol = "http"
 		proxySetting = &conf.HTTPServerConfig{}
 	default:

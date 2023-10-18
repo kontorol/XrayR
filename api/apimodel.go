@@ -63,7 +63,6 @@ type UserInfo struct {
 	Email       string
 	UUID        string
 	Passwd      string
-	HttPasswd   string
 	Port        uint32
 	AlterID     uint16
 	Method      string
