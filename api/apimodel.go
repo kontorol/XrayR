@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"regexp"
 
+	rdns "github.com/folbricht/routedns/api"
 	"github.com/xtls/xray-core/infra/conf"
 )
 
@@ -56,6 +57,7 @@ type NodeInfo struct {
 	NameServerConfig  []*conf.NameServerConfig
 	EnableREALITY     bool
 	REALITYConfig     *REALITYConfig
+	RouteDnsConfig    *rdns.Manager
 }
 
 type UserInfo struct {

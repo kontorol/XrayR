@@ -6,6 +6,7 @@ toolchain go1.21.1
 
 require (
 	dario.cat/mergo v1.0.0
+	github.com/BurntSushi/toml v1.3.2
 	github.com/bitly/go-simplejson v0.5.1
 	github.com/deckarep/golang-set v1.8.0
 	github.com/eko/gocache/lib/v4 v4.1.5
@@ -18,7 +19,7 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/r3labs/diff/v2 v2.15.1
 	github.com/redis/go-redis/v9 v9.2.1
-	github.com/sagernet/sing v0.2.14
+	github.com/sagernet/sing v0.2.15
 	github.com/sagernet/sing-shadowsocks v0.2.5
 	github.com/shirou/gopsutil/v3 v3.23.9
 	github.com/spf13/cobra v1.7.0
@@ -29,6 +30,20 @@ require (
 	golang.org/x/net v0.17.0
 	golang.org/x/time v0.3.0
 	google.golang.org/protobuf v1.31.0
+)
+
+require (
+	github.com/emirpasic/gods v1.18.1 // indirect
+	github.com/heimdalr/dag v1.2.1 // indirect
+	github.com/jtacoma/uritemplates v1.0.0 // indirect
+	github.com/oschwald/maxminddb-golang v1.10.0 // indirect
+	github.com/pion/dtls/v2 v2.2.4 // indirect
+	github.com/pion/logging v0.2.2 // indirect
+	github.com/pion/transport/v2 v2.0.0 // indirect
+	github.com/pion/udp v0.1.4 // indirect
+	github.com/quic-go/qpack v0.4.0 // indirect
+	github.com/txthinking/runnergroup v0.0.0-20210608031112-152c7c4432bf // indirect
+	github.com/txthinking/socks5 v0.0.0-20230325130024-4230056ae301 // indirect
 )
 
 require (
@@ -52,6 +67,7 @@ require (
 	github.com/Azure/go-autorest/tracing v0.6.0 // indirect
 	github.com/AzureAD/microsoft-authentication-library-for-go v1.0.0 // indirect
 	github.com/OpenDNS/vegadns2client v0.0.0-20180418235048-a3fa4a771d87 // indirect
+	github.com/RackSec/srslog v0.0.0-20180709174129-a4725f04ec91 // indirect
 	github.com/akamai/AkamaiOPEN-edgegrid-golang v1.2.2 // indirect
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1755 // indirect
 	github.com/andres-erbsen/clock v0.0.0-20160526145045-9e14626cd129 // indirect
@@ -86,6 +102,7 @@ require (
 	github.com/dnsimple/dnsimple-go v1.2.0 // indirect
 	github.com/exoscale/egoscale v0.100.1 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
+	github.com/folbricht/routedns v0.1.21-0.20231021081103-822f708e128c
 	github.com/francoispqt/gojay v1.2.13 // indirect
 	github.com/gaukas/godicttls v0.0.4 // indirect
 	github.com/ghodss/yaml v1.0.1-0.20220118164431-d8423dcdf344 // indirect
@@ -166,7 +183,7 @@ require (
 	github.com/prometheus/common v0.37.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
 	github.com/quic-go/qtls-go1-20 v0.3.4 // indirect
-	github.com/quic-go/quic-go v0.39.0 // indirect
+	github.com/quic-go/quic-go v0.39.3 // indirect
 	github.com/refraction-networking/utls v1.5.4 // indirect
 	github.com/riobard/go-bloom v0.0.0-20200614022211-cdc8013cb5b3 // indirect
 	github.com/sacloud/api-client-go v0.2.8 // indirect
@@ -179,7 +196,7 @@ require (
 	github.com/scaleway/scaleway-sdk-go v1.0.0-beta.17 // indirect
 	github.com/seiflotfy/cuckoofilter v0.0.0-20220411075957-e3b120b3f5fb // indirect
 	github.com/shoenig/go-m1cpu v0.1.6 // indirect
-	github.com/sirupsen/logrus v1.8.1 // indirect
+	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/smartystreets/go-aws-auth v0.0.0-20180515143844-0c1422d1fdb9 // indirect
 	github.com/softlayer/softlayer-go v1.1.2 // indirect
 	github.com/softlayer/xmlrpc v0.0.0-20200409220501-5f089df7cb7e // indirect
@@ -224,7 +241,7 @@ require (
 	google.golang.org/genproto v0.0.0-20230913181813-007df8e322eb // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20230913181813-007df8e322eb // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230920204549-e6e6cdab5c13 // indirect
-	google.golang.org/grpc v1.58.3 // indirect
+	google.golang.org/grpc v1.59.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/ns1/ns1-go.v2 v2.7.6 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
@@ -236,3 +253,5 @@ require (
 replace github.com/exoscale/egoscale => github.com/exoscale/egoscale v0.102.0
 
 replace github.com/xtls/xray-core => github.com/kontorol/xray-core v1.8.4
+
+replace github.com/folbricht/routedns => github.com/kontorol/routedns v0.1.21-0.20231102054527-4b4feebc4505

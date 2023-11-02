@@ -19,6 +19,7 @@ import (
 	"github.com/XrayR-project/XrayR/app/mydispatcher"
 	"github.com/XrayR-project/XrayR/common/mylego"
 	"github.com/XrayR-project/XrayR/common/serverstatus"
+	rdns "github.com/folbricht/routedns/api"
 )
 
 type LimitInfo struct {
@@ -42,6 +43,7 @@ type Controller struct {
 	ibm          inbound.Manager
 	obm          outbound.Manager
 	stm          stats.Manager
+	rdm          rdns.Manager
 	dispatcher   *mydispatcher.DefaultDispatcher
 	startAt      time.Time
 }
@@ -153,6 +155,11 @@ func (c *Controller) Start() error {
 			}})
 	}
 
+	err = c.rdm.Start()
+	if err != nil {
+		return err
+	}
+
 	// Start periodic tasks
 	for i := range c.tasks {
 		log.Printf("%s Start %s periodic task", c.logPrefix(), c.tasks[i].tag)
@@ -169,6 +176,13 @@ func (c *Controller) Close() error {
 			if err := c.tasks[i].Periodic.Close(); err != nil {
 				log.Panicf("%s %s periodic task close failed: %s", c.logPrefix(), c.tasks[i].tag, err)
 			}
+		}
+	}
+
+	if c.rdm.Listeners != nil {
+		err := c.rdm.Close()
+		if err != nil {
+			return err
 		}
 	}
 
@@ -325,6 +339,10 @@ func (c *Controller) addNewTag(newNodeInfo *api.NodeInfo) (err error) {
 		if err != nil {
 
 			return err
+		}
+		if newNodeInfo.RouteDnsConfig != nil {
+			c.rdm = *newNodeInfo.RouteDnsConfig
+			c.rdm.Config.Title = c.Tag
 		}
 		outBoundConfig, err := OutboundBuilder(c.config, newNodeInfo, c.Tag)
 		if err != nil {

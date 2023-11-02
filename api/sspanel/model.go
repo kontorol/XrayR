@@ -1,6 +1,8 @@
 package sspanel
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 // NodeInfoResponse is the response of node
 type NodeInfoResponse struct {
@@ -13,6 +15,11 @@ type NodeInfoResponse struct {
 	Type            string          `json:"type"`
 	CustomConfig    json.RawMessage `json:"custom_config"`
 	Version         string          `json:"version"`
+}
+
+type RouteDnsConfig struct {
+	IsRouteDns bool   `json:"is_route_dns"`
+	Config     string `json:"routedns_config"`
 }
 
 type CustomConfig struct {
@@ -33,6 +40,7 @@ type CustomConfig struct {
 	Flow           string          `json:"flow"`
 	EnableREALITY  bool            `json:"enable_reality"`
 	RealityOpts    *REALITYConfig  `json:"reality-opts"`
+	RouteDns       *RouteDnsConfig `json:"route-dns"`
 }
 
 // UserResponse is the response of user

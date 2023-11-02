@@ -14,9 +14,11 @@ import (
 	"sync"
 	"time"
 
+	"github.com/BurntSushi/toml"
 	"github.com/go-resty/resty/v2"
 
 	"github.com/XrayR-project/XrayR/api"
+	rdns "github.com/folbricht/routedns/api"
 )
 
 var (
@@ -737,6 +739,7 @@ func (c *APIClient) ParseSSPanelNodeInfo(nodeInfoResponse *NodeInfoResponse) (*a
 		enableTLS, enableVless     bool
 		alterID                    uint16 = 0
 		tlsType, transportProtocol string
+		rdnsManager *rdns.Manager
 	)
 
 	// Check if custom_config is null
@@ -795,8 +798,22 @@ func (c *APIClient) ParseSSPanelNodeInfo(nodeInfoResponse *NodeInfoResponse) (*a
 			transportProtocol = nodeConfig.Network // try to read transport protocol from config
 		}
 	case "Http":
-		transportProtocol = "tcp"
 
+		if nodeConfig.RouteDns != nil && nodeConfig.RouteDns.IsRouteDns {
+
+			rdnsConfig := &rdns.Config{}
+			_, err := toml.Decode(nodeConfig.RouteDns.Config, &rdnsConfig)
+			if err != nil {
+				return nil, fmt.Errorf("RouteDns Config format error: %v", err)
+			}
+			rdnsManager, err = rdnsConfig.GetPanelManager(6)
+			if err != nil {
+				return nil, fmt.Errorf("RouteDns Config format error: %v", err)
+			}
+			rdnsManager.IsEnable = nodeConfig.RouteDns.IsRouteDns
+		}
+
+		transportProtocol = "tcp"
 		// Select transport protocol
 		if nodeConfig.Network != "" {
 			transportProtocol = nodeConfig.Network // try to read transport protocol from config
@@ -837,6 +854,7 @@ func (c *APIClient) ParseSSPanelNodeInfo(nodeInfoResponse *NodeInfoResponse) (*a
 		Header:            nodeConfig.Header,
 		EnableREALITY:     nodeConfig.EnableREALITY,
 		REALITYConfig:     realityConfig,
+		RouteDnsConfig:    rdnsManager,
 	}
 
 	return nodeInfo, nil

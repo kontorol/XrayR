@@ -3,18 +3,20 @@ package controller
 import (
 	"encoding/base64"
 	"fmt"
+	"net"
 	"strings"
 
+	rdns "github.com/folbricht/routedns"
 	"github.com/sagernet/sing-shadowsocks/shadowaead_2022"
 	C "github.com/sagernet/sing/common"
 	"github.com/xtls/xray-core/common/protocol"
 	"github.com/xtls/xray-core/common/serial"
 	"github.com/xtls/xray-core/infra/conf"
+	H "github.com/xtls/xray-core/proxy/http"
 	"github.com/xtls/xray-core/proxy/shadowsocks"
 	"github.com/xtls/xray-core/proxy/shadowsocks_2022"
 	"github.com/xtls/xray-core/proxy/trojan"
 	"github.com/xtls/xray-core/proxy/vless"
-	H "github.com/xtls/xray-core/proxy/http"
 
 	"github.com/XrayR-project/XrayR/api"
 )
@@ -59,18 +61,35 @@ func (c *Controller) buildVlessUser(userInfo *[]api.UserInfo) (users []*protocol
 }
 
 func (c *Controller) buildHttpUser(userInfo *[]api.UserInfo) (users []*protocol.User) {
-	users = make([]*protocol.User, len(*userInfo))
-	for i, user := range *userInfo {
+	users = []*protocol.User{}
+	dnsUsers := []string{}
+	for _, user := range *userInfo {
+		if user.Passwd == "" {
+			continue
+		}
 		e := c.buildUserTag(&user)
 
 		httpAccount := &H.Account{
 			Username: e,
 			Password: user.Passwd,
 		}
-		users[i] = &protocol.User{
+		users = append(users, &protocol.User{
 			Level:   0,
 			Email:   e,
 			Account: serial.ToTypedMessage(httpAccount),
+		})
+		ip := net.ParseIP(user.Passwd)
+		if !ip.IsUnspecified() {
+			dnsUsers = append(dnsUsers, ip.String())
+		}
+	}
+	if c.rdm.IsEnable {
+		db, err := rdns.NewCidrDB(c.Tag, rdns.NewStaticLoader(dnsUsers))
+		if err == nil {
+			fmt.Print(db)
+		}
+		for _, resolver := range c.rdm.Resolvers {
+			resolver.SetIPBlocklistDB(db)
 		}
 	}
 	return users
