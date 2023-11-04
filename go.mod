@@ -252,6 +252,6 @@ require (
 
 replace github.com/exoscale/egoscale => github.com/exoscale/egoscale v0.102.0
 
-replace github.com/xtls/xray-core => github.com/kontorol/xray-core v1.8.4
+replace github.com/xtls/xray-core => github.com/kontorol/xray-core v0.0.0-20231018204411-d45e3d04902f
 
-replace github.com/folbricht/routedns => github.com/kontorol/routedns v0.1.21-0.20231102054527-4b4feebc4505
+replace github.com/folbricht/routedns => github.com/kontorol/routedns v0.1.21-0.20231104154813-54cfef6c50c3

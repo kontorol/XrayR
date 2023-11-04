@@ -378,8 +378,9 @@ github.com/google/go-cmp v0.5.5/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/
 github.com/google/go-cmp v0.5.6/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.5.7/go.mod h1:n+brtR0CgQNWTVd5ZUFpTBC8YFBDLK/h/bpaJ8/DtOE=
 github.com/google/go-cmp v0.5.8/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
-github.com/google/go-cmp v0.5.9 h1:O2Tfq5qg4qc4AmwVlvv0oLiVAGB7enBSJ2x2DqQFi38=
 github.com/google/go-cmp v0.5.9/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
+github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
+github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
 github.com/google/go-github v17.0.0+incompatible/go.mod h1:zLgOLi98H3fifZn+44m+umXrS52loVEgC2AApnigrVQ=
 github.com/google/go-github/v32 v32.1.0/go.mod h1:rIEpZD9CTDQwDK9GDrtMTycQNA4JU3qBsCizh3q2WCI=
 github.com/google/go-querystring v1.0.0/go.mod h1:odCYkC5MyYFN7vkCjXpyrEuKhc/BUO6wN/zVPAxq5ck=
@@ -522,10 +523,10 @@ github.com/kolo/xmlrpc v0.0.0-20220921171641-a4b6fa1dd06b h1:udzkj9S/zlT5X367kqJ
 github.com/kolo/xmlrpc v0.0.0-20220921171641-a4b6fa1dd06b/go.mod h1:pcaDhQK0/NJZEvtCO0qQPPropqV0sJOJ6YW7X+9kRwM=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 github.com/konsorten/go-windows-terminal-sequences v1.0.3/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
-github.com/kontorol/routedns v0.1.21-0.20231102054527-4b4feebc4505 h1:VxGutg0OVvXlp8x/K+8UJJMg97pFvtj7v8aOOBRS6G8=
-github.com/kontorol/routedns v0.1.21-0.20231102054527-4b4feebc4505/go.mod h1:EZHXhIqxRsJiJD9ct3mUmbv1pOZB8wXHc+M+iEshHpo=
-github.com/kontorol/xray-core v1.8.4 h1:ZoV9NNN9AyUfFkoBz1JAj1ymJxMWIu38IH8Uzx8sm5s=
-github.com/kontorol/xray-core v1.8.4/go.mod h1:mu4ZTSpcp84JCAcjYXjSns6fx1EjqKXppn9DZxKQNv4=
+github.com/kontorol/routedns v0.1.21-0.20231104154813-54cfef6c50c3 h1:ZDBGbRwctDmP3EYu3ESEHHQciKgQfycfC0igPqevbWw=
+github.com/kontorol/routedns v0.1.21-0.20231104154813-54cfef6c50c3/go.mod h1:EZHXhIqxRsJiJD9ct3mUmbv1pOZB8wXHc+M+iEshHpo=
+github.com/kontorol/xray-core v0.0.0-20231018204411-d45e3d04902f h1:oZsYUmB5NcbBmeGnQJnJgbArOFw3zI8pSsaJP/nRZO4=
+github.com/kontorol/xray-core v0.0.0-20231018204411-d45e3d04902f/go.mod h1:QXhGEdOIOZgjbDJxwSMtqePakiW8vhkyqYjkLtarmjc=
 github.com/kr/fs v0.1.0/go.mod h1:FFnZGqtBN9Gxj7eW1uZ42v5BccTP0vu6NEaFoC2HwRg=
 github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515/go.mod h1:+0opPa2QZZtGFBFZlji/RkVcI2GknAs/DXo4wKdlNEc=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=

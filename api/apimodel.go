@@ -57,7 +57,7 @@ type NodeInfo struct {
 	NameServerConfig  []*conf.NameServerConfig
 	EnableREALITY     bool
 	REALITYConfig     *REALITYConfig
-	RouteDnsConfig    *rdns.Manager
+	RouteDnsConfig    *rdns.Config
 }
 
 type UserInfo struct {

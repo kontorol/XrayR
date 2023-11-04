@@ -83,7 +83,7 @@ func (c *Controller) buildHttpUser(userInfo *[]api.UserInfo) (users []*protocol.
 			dnsUsers = append(dnsUsers, ip.String())
 		}
 	}
-	if c.rdm.IsEnable {
+	if c.rdm.Config.Enable {
 		db, err := rdns.NewCidrDB(c.Tag, rdns.NewStaticLoader(dnsUsers))
 		if err == nil {
 			fmt.Print(db)

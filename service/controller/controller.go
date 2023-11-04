@@ -340,9 +340,24 @@ func (c *Controller) addNewTag(newNodeInfo *api.NodeInfo) (err error) {
 
 			return err
 		}
-		if newNodeInfo.RouteDnsConfig != nil {
-			c.rdm = *newNodeInfo.RouteDnsConfig
-			c.rdm.Config.Title = c.Tag
+
+		if c.rdm.Config == nil || !reflect.DeepEqual(c.rdm.Config, newNodeInfo.RouteDnsConfig) {
+
+			rdnsManager, err := newNodeInfo.RouteDnsConfig.GetPanelManager(6)
+			if err != nil {
+				return fmt.Errorf("RouteDns Config format error: %v", err)
+			}
+			
+			if newNodeInfo.RouteDnsConfig != nil {
+				if c.rdm.Running {
+					c.rdm.Close()
+				}
+				c.rdm = *rdnsManager
+				c.rdm.Config = newNodeInfo.RouteDnsConfig
+				c.rdm.Config.Title = c.Tag
+				c.rdm.Start()
+			}
+			
 		}
 		outBoundConfig, err := OutboundBuilder(c.config, newNodeInfo, c.Tag)
 		if err != nil {

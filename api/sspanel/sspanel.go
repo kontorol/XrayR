@@ -739,7 +739,7 @@ func (c *APIClient) ParseSSPanelNodeInfo(nodeInfoResponse *NodeInfoResponse) (*a
 		enableTLS, enableVless     bool
 		alterID                    uint16 = 0
 		tlsType, transportProtocol string
-		rdnsManager *rdns.Manager
+		rdnsConfig *rdns.Config
 	)
 
 	// Check if custom_config is null
@@ -801,16 +801,11 @@ func (c *APIClient) ParseSSPanelNodeInfo(nodeInfoResponse *NodeInfoResponse) (*a
 
 		if nodeConfig.RouteDns != nil && nodeConfig.RouteDns.IsRouteDns {
 
-			rdnsConfig := &rdns.Config{}
 			_, err := toml.Decode(nodeConfig.RouteDns.Config, &rdnsConfig)
 			if err != nil {
 				return nil, fmt.Errorf("RouteDns Config format error: %v", err)
 			}
-			rdnsManager, err = rdnsConfig.GetPanelManager(6)
-			if err != nil {
-				return nil, fmt.Errorf("RouteDns Config format error: %v", err)
-			}
-			rdnsManager.IsEnable = nodeConfig.RouteDns.IsRouteDns
+			rdnsConfig.Enable = nodeConfig.RouteDns.IsRouteDns
 		}
 
 		transportProtocol = "tcp"
@@ -854,7 +849,7 @@ func (c *APIClient) ParseSSPanelNodeInfo(nodeInfoResponse *NodeInfoResponse) (*a
 		Header:            nodeConfig.Header,
 		EnableREALITY:     nodeConfig.EnableREALITY,
 		REALITYConfig:     realityConfig,
-		RouteDnsConfig:    rdnsManager,
+		RouteDnsConfig:    rdnsConfig,
 	}
 
 	return nodeInfo, nil
