@@ -12,16 +12,16 @@ require (
 	github.com/eko/gocache/lib/v4 v4.1.5
 	github.com/eko/gocache/store/go_cache/v4 v4.2.1
 	github.com/eko/gocache/store/redis/v4 v4.2.1
-	github.com/fsnotify/fsnotify v1.6.0
+	github.com/fsnotify/fsnotify v1.7.0
 	github.com/go-acme/lego/v4 v4.14.2
 	github.com/go-resty/resty/v2 v2.10.0
-	github.com/gogf/gf/v2 v2.5.4
+	github.com/gogf/gf/v2 v2.5.6
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/r3labs/diff/v2 v2.15.1
-	github.com/redis/go-redis/v9 v9.2.1
+	github.com/redis/go-redis/v9 v9.3.0
 	github.com/sagernet/sing v0.2.15
 	github.com/sagernet/sing-shadowsocks v0.2.5
-	github.com/shirou/gopsutil/v3 v3.23.9
+	github.com/shirou/gopsutil/v3 v3.23.10
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.17.0
 	github.com/stretchr/testify v1.8.4
