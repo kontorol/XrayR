@@ -659,5 +659,47 @@ func (c *Controller) certMonitor() error {
 			}
 		}
 	}
+
+	if c.nodeInfo.NodeType == "Http" && c.rdm.Config.Enable {
+		for _, l := range c.rdm.Config.Listeners {
+			switch l.Lego.CertMode {
+			case "dns", "http", "tls":
+				lego, err := mylego.New(&l.Lego)
+				if err != nil {
+					log.Print(err)
+				}
+				// Xray-core supports the OcspStapling certification hot renew
+				ok := false
+				_, _, ok, err = lego.RenewCert()
+				if err != nil {
+					log.Print(err)
+				}
+				if ok && c.rdm.Running {
+					c.rdm.Close()
+					c.rdm.Start()
+				}
+			}
+		}
+
+		for _, r := range c.rdm.Config.Resolvers {
+			switch r.Lego.CertMode {
+			case "dns", "http", "tls":
+				lego, err := mylego.New(&r.Lego)
+				if err != nil {
+					log.Print(err)
+				}
+				// Xray-core supports the OcspStapling certification hot renew
+				ok := false
+				_, _, ok, err = lego.RenewCert()
+				if err != nil {
+					log.Print(err)
+				}
+				if ok && c.rdm.Running {
+					c.rdm.Close()
+					c.rdm.Start()
+				}
+			}
+		}	
+	}
 	return nil
 }

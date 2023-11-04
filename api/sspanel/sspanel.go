@@ -744,7 +744,7 @@ func (c *APIClient) ParseSSPanelNodeInfo(nodeInfoResponse *NodeInfoResponse) (*a
 		enableTLS, enableVless     bool
 		alterID                    uint16 = 0
 		tlsType, transportProtocol string
-		rdnsConfig *rdns.Config
+		rdnsConfig                 *rdns.Config
 	)
 
 	// Check if custom_config is null
