@@ -110,7 +110,7 @@ func (c *Controller) Start() error {
 	}
 
 	// Add Rule Manager
-	if !c.config.DisableGetRule {
+	if !c.config.DisableGetRule && !c.config.OnlyRouteDns{
 		if ruleList, err := c.apiClient.GetNodeRule(); err != nil {
 			log.Printf("Get rule list filed: %s", err)
 		} else if len(*ruleList) > 0 {
@@ -121,10 +121,10 @@ func (c *Controller) Start() error {
 	}
 
 	// Init AutoSpeedLimitConfig
-	if c.config.AutoSpeedLimitConfig == nil {
+	if c.config.AutoSpeedLimitConfig == nil && !c.config.OnlyRouteDns {
 		c.config.AutoSpeedLimitConfig = &AutoSpeedLimitConfig{0, 0, 0, 0}
 	}
-	if c.config.AutoSpeedLimitConfig.Limit > 0 {
+	if c.config.AutoSpeedLimitConfig.Limit > 0 && !c.config.OnlyRouteDns {
 		c.limitedUsers = make(map[api.UserInfo]LimitInfo)
 		c.warnedUsers = make(map[api.UserInfo]int)
 	}
@@ -146,8 +146,8 @@ func (c *Controller) Start() error {
 	)
 
 	// Check cert service in need
-	if c.nodeInfo.EnableTLS && c.config.EnableREALITY == false {
-		c.tasks = append(c.tasks, periodicTask{
+	if (c.nodeInfo.EnableTLS && !c.config.EnableREALITY) || c.nodeInfo.EnableTLS {
+		c.tasks = append(c.tasks, periodicTask {
 			tag: "cert monitor",
 			Periodic: &task.Periodic{
 				Interval: time.Duration(c.config.UpdatePeriodic) * time.Second * 60,
@@ -155,9 +155,11 @@ func (c *Controller) Start() error {
 			}})
 	}
 
-	err = c.rdm.Start()
-	if err != nil {
-		return err
+	if c.rdm.Config.Enable && !c.config.NonRouteDns {
+		err = c.rdm.Start()
+		if err != nil {
+			return err
+		}
 	}
 
 	// Start periodic tasks
@@ -261,7 +263,7 @@ func (c *Controller) nodeInfoMonitor() (err error) {
 	}
 
 	// Check Rule
-	if !c.config.DisableGetRule {
+	if !c.config.DisableGetRule && !c.config.OnlyRouteDns {
 		if ruleList, err := c.apiClient.GetNodeRule(); err != nil {
 			if err.Error() != api.RuleNotModified {
 				log.Printf("Get rule list filed: %s", err)
@@ -292,10 +294,14 @@ func (c *Controller) nodeInfoMonitor() (err error) {
 			deleted, added = compareUserList(c.userList, newUserInfo)
 			if len(deleted) > 0 {
 				deletedEmail := make([]string, len(deleted))
+				deletedIP := make([]string, len(deleted))
 				for i, u := range deleted {
 					deletedEmail[i] = fmt.Sprintf("%s|%s|%d", c.Tag, u.Email, u.UID)
+					if c.clientInfo.NodeType == "Http" && c.rdm.Config.Enable {
+						deletedIP[i] = u.Passwd
+					}
 				}
-				err := c.removeUsers(deletedEmail, c.Tag)
+				err := c.removeUsers(deletedEmail,deletedIP, c.Tag)
 				if err != nil {
 					log.Print(err)
 				}
@@ -330,7 +336,7 @@ func (c *Controller) removeOldTag(oldTag string) (err error) {
 }
 
 func (c *Controller) addNewTag(newNodeInfo *api.NodeInfo) (err error) {
-	if newNodeInfo.NodeType != "Shadowsocks-Plugin" {
+	if newNodeInfo.NodeType != "Shadowsocks-Plugin" && !c.config.OnlyRouteDns {
 		inboundConfig, err := InboundBuilder(c.config, newNodeInfo, c.Tag)
 		if err != nil {
 			return err
@@ -341,7 +347,7 @@ func (c *Controller) addNewTag(newNodeInfo *api.NodeInfo) (err error) {
 			return err
 		}
 
-		if c.rdm.Config == nil || !reflect.DeepEqual(c.rdm.Config, newNodeInfo.RouteDnsConfig) {
+		if (c.rdm.Config == nil || !reflect.DeepEqual(c.rdm.Config, newNodeInfo.RouteDnsConfig)) && !c.config.NonRouteDns {
 
 			rdnsManager, err := newNodeInfo.RouteDnsConfig.GetPanelManager(6)
 			if err != nil {
@@ -349,16 +355,25 @@ func (c *Controller) addNewTag(newNodeInfo *api.NodeInfo) (err error) {
 			}
 			
 			if newNodeInfo.RouteDnsConfig != nil {
+				newNodeInfo.RouteDnsConfig.Title = c.Tag
+				rdnsManager.Config = newNodeInfo.RouteDnsConfig
+
+				reload := false
 				if c.rdm.Running {
 					c.rdm.Close()
-				}
+					reload = true
+				}			
 				c.rdm = *rdnsManager
-				c.rdm.Config = newNodeInfo.RouteDnsConfig
-				c.rdm.Config.Title = c.Tag
-				c.rdm.Start()
+				if reload {
+					err = c.rdm.Start()
+					if err != nil {
+						return fmt.Errorf("RouteDns reload failed error: %v", err)
+					}
+				}
 			}
 			
 		}
+
 		outBoundConfig, err := OutboundBuilder(c.config, newNodeInfo, c.Tag)
 		if err != nil {
 
@@ -369,9 +384,37 @@ func (c *Controller) addNewTag(newNodeInfo *api.NodeInfo) (err error) {
 
 			return err
 		}
-
-	} else {
+	} else if newNodeInfo.NodeType == "Shadowsocks-Plugin" {
 		return c.addInboundForSSPlugin(*newNodeInfo)
+	} else if c.config.OnlyRouteDns {
+
+		if c.rdm.Config == nil || !reflect.DeepEqual(c.rdm.Config, newNodeInfo.RouteDnsConfig) {
+
+			rdnsManager, err := newNodeInfo.RouteDnsConfig.GetPanelManager(6)
+			if err != nil {
+				return fmt.Errorf("RouteDns Config format error: %v", err)
+			}
+			
+			if newNodeInfo.RouteDnsConfig != nil {
+				newNodeInfo.RouteDnsConfig.Title = c.Tag
+				rdnsManager.Config = newNodeInfo.RouteDnsConfig
+
+				reload := false
+				if c.rdm.Running {
+					c.rdm.Close()
+					reload = true
+				}			
+				c.rdm = *rdnsManager
+				if reload {
+					err = c.rdm.Start()
+					if err != nil {
+						return fmt.Errorf("RouteDns reload failed error: %v", err)
+					}
+				}
+			}
+			
+		}
+
 	}
 	return nil
 }
@@ -449,9 +492,11 @@ func (c *Controller) addNewUser(userInfo *[]api.UserInfo, nodeInfo *api.NodeInfo
 		return fmt.Errorf("unsupported node type: %s", nodeInfo.NodeType)
 	}
 
-	err = c.addUsers(users, c.Tag)
-	if err != nil {
-		return err
+	if !c.config.OnlyRouteDns {
+		err = c.addUsers(users, c.Tag)
+		if err != nil {
+			return err
+		}
 	}
 	log.Printf("%s Added %d new users", c.logPrefix(), len(*userInfo))
 	return nil

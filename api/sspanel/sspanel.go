@@ -810,6 +810,23 @@ func (c *APIClient) ParseSSPanelNodeInfo(nodeInfoResponse *NodeInfoResponse) (*a
 			if err != nil {
 				return nil, fmt.Errorf("RouteDns Config format error: %v", err)
 			}
+			for _, l := range rdnsConfig.Listeners {
+				switch l.Lego.CertMode {
+				case "dns", "http", "tls":
+					rdnsConfig.TLS = true
+					break
+				}
+			}
+			if !enableTLS {
+				for _, r := range rdnsConfig.Resolvers {
+					switch r.Lego.CertMode {
+					case "dns", "http", "tls":
+						rdnsConfig.TLS = true
+						break
+					}
+				}
+			}
+
 			rdnsConfig.Enable = nodeConfig.RouteDns.IsRouteDns
 		}
 

@@ -523,8 +523,8 @@ github.com/kolo/xmlrpc v0.0.0-20220921171641-a4b6fa1dd06b h1:udzkj9S/zlT5X367kqJ
 github.com/kolo/xmlrpc v0.0.0-20220921171641-a4b6fa1dd06b/go.mod h1:pcaDhQK0/NJZEvtCO0qQPPropqV0sJOJ6YW7X+9kRwM=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 github.com/konsorten/go-windows-terminal-sequences v1.0.3/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
-github.com/kontorol/routedns v0.1.21-0.20231104234144-90a982f7ed32 h1:/6qHYc9OXpJEweJycp5fzjJpRI3J6sfoyFRofclYq/k=
-github.com/kontorol/routedns v0.1.21-0.20231104234144-90a982f7ed32/go.mod h1:gll0x35Y5k4/EX/iLp5BJhYFLGXmeR/1BnsgeHyS1jg=
+github.com/kontorol/routedns v0.1.21-0.20231105061915-70abf2aec4b7 h1:F6LkTHkn1bltSQF/wijxjhj0Q2ymJNUBCSTnqleq/U8=
+github.com/kontorol/routedns v0.1.21-0.20231105061915-70abf2aec4b7/go.mod h1:gll0x35Y5k4/EX/iLp5BJhYFLGXmeR/1BnsgeHyS1jg=
 github.com/kontorol/xray-core v0.0.0-20231018204411-d45e3d04902f h1:oZsYUmB5NcbBmeGnQJnJgbArOFw3zI8pSsaJP/nRZO4=
 github.com/kontorol/xray-core v0.0.0-20231018204411-d45e3d04902f/go.mod h1:QXhGEdOIOZgjbDJxwSMtqePakiW8vhkyqYjkLtarmjc=
 github.com/kr/fs v0.1.0/go.mod h1:FFnZGqtBN9Gxj7eW1uZ42v5BccTP0vu6NEaFoC2HwRg=

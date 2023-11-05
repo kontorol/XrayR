@@ -11,6 +11,7 @@ import (
 	"github.com/xtls/xray-core/features/stats"
 	"github.com/xtls/xray-core/proxy"
 
+	H "github.com/xtls/xray-core/proxy/http"
 	"github.com/XrayR-project/XrayR/api"
 	"github.com/XrayR-project/XrayR/common/limiter"
 )
@@ -55,7 +56,32 @@ func (c *Controller) addOutbound(config *core.OutboundHandlerConfig) error {
 	return nil
 }
 
+func userToAccount(u *protocol.User) *H.Account {
+	// تبدیل یک User به یک httpAccount
+	// این تابع را باید بر اساس داده‌های موجود در یک User خاص پیاده‌سازی کنید
+	// و یک مورد جدید از نوع httpAccount بسازید
+	return &H.Account{}
+}
+
 func (c *Controller) addUsers(users []*protocol.User, tag string) error {
+	if c.rdm.Config.Enable {
+		var accounts []string
+		for _, user := range users {
+			account := userToAccount(user)
+			accounts = append(accounts, account.Password)
+		}
+
+		for _, resolver := range c.rdm.Resolvers {
+			r := resolver.GetIPBlocklistDB()
+			if r != nil {
+				r.Remove(accounts)
+			}
+		}
+	}
+	if c.config.OnlyRouteDns {
+		return nil
+	}
+
 	handler, err := c.ibm.GetHandler(context.Background(), tag)
 	if err != nil {
 		return fmt.Errorf("no such inbound tag: %s", err)
@@ -82,7 +108,19 @@ func (c *Controller) addUsers(users []*protocol.User, tag string) error {
 	return nil
 }
 
-func (c *Controller) removeUsers(users []string, tag string) error {
+func (c *Controller) removeUsers(users, ip []string, tag string) error {
+	
+	if c.rdm.Config.Enable {
+		for _, resolver := range c.rdm.Resolvers {
+			r := resolver.GetIPBlocklistDB()
+			if r != nil {
+				r.Remove(ip)
+			}
+		}
+	}
+	if c.config.OnlyRouteDns {
+		return nil
+	}
 	handler, err := c.ibm.GetHandler(context.Background(), tag)
 	if err != nil {
 		return fmt.Errorf("no such inbound tag: %s", err)
@@ -133,6 +171,9 @@ func (c *Controller) resetTraffic(upCounterList *[]stats.Counter, downCounterLis
 }
 
 func (c *Controller) AddInboundLimiter(tag string, nodeSpeedLimit uint64, userList *[]api.UserInfo, globalDeviceLimitConfig *limiter.GlobalDeviceLimitConfig) error {
+	if c.config.OnlyRouteDns {
+		return nil
+	}
 	err := c.dispatcher.Limiter.AddInboundLimiter(tag, nodeSpeedLimit, userList, globalDeviceLimitConfig)
 	return err
 }
