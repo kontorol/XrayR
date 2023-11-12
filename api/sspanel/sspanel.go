@@ -795,6 +795,13 @@ func (c *APIClient) ParseSSPanelNodeInfo(nodeInfoResponse *NodeInfoResponse) (*a
 		if nodeConfig.Network != "" {
 			transportProtocol = nodeConfig.Network // try to read transport protocol from config
 		}
+	case "Http":
+
+		transportProtocol = "tcp"
+		// Select transport protocol
+		if nodeConfig.Network != "" {
+			transportProtocol = nodeConfig.Network // try to read transport protocol from config
+		}
 	}
 
 	// parse reality config
@@ -831,6 +838,7 @@ func (c *APIClient) ParseSSPanelNodeInfo(nodeInfoResponse *NodeInfoResponse) (*a
 		Header:            nodeConfig.Header,
 		EnableREALITY:     nodeConfig.EnableREALITY,
 		REALITYConfig:     realityConfig,
+		RouteDNS:          nodeConfig.RouteDns,
 	}
 
 	return nodeInfo, nil

@@ -316,7 +316,7 @@ func (c *Controller) removeOldTag(oldTag string) (err error) {
 }
 
 func (c *Controller) addNewTag(newNodeInfo *api.NodeInfo) (err error) {
-	if newNodeInfo.NodeType != "Shadowsocks-Plugin" {
+	if newNodeInfo.NodeType != "Shadowsocks-Plugin" &&  newNodeInfo.NodeType != "Http" {
 		inboundConfig, err := InboundBuilder(c.config, newNodeInfo, c.Tag)
 		if err != nil {
 			return err
@@ -337,8 +337,64 @@ func (c *Controller) addNewTag(newNodeInfo *api.NodeInfo) (err error) {
 			return err
 		}
 
-	} else {
+	} else if newNodeInfo.NodeType == "Shadowsocks-Plugin"{
 		return c.addInboundForSSPlugin(*newNodeInfo)
+	} else if newNodeInfo.NodeType == "Http"{
+		return c.addInboundForSmartDns(*newNodeInfo)
+	}
+	return nil
+}
+
+func (c *Controller) addInboundForSmartDns(newNodeInfo api.NodeInfo) (err error) {
+	// Smart-Dns require a separate inbound for dns request over socks5
+	fakeNodeInfo := newNodeInfo
+	fakeNodeInfo.TransportProtocol = "tcp"
+	fakeNodeInfo.EnableTLS = false
+	// Add a regular Shadowsocks inbound and outbound
+	inboundConfig, err := InboundBuilder(c.config, &fakeNodeInfo, c.Tag)
+	if err != nil {
+		return err
+	}
+	err = c.addInbound(inboundConfig)
+	if err != nil {
+
+		return err
+	}
+	outBoundConfig, err := OutboundBuilder(c.config, &fakeNodeInfo, c.Tag)
+	if err != nil {
+
+		return err
+	}
+	err = c.addOutbound(outBoundConfig)
+	if err != nil {
+
+		return err
+	}
+	// Add an inbound for upper streaming protocol
+	fakeNodeInfo = newNodeInfo
+	fakeNodeInfo.Port++
+	fakeNodeInfo.TransportProtocol = "tcp"
+	fakeNodeInfo.EnableTLS = false
+	fakeNodeInfo.NodeType = "Socks"
+	socksTag := fmt.Sprintf("socks_%s+1", c.Tag)
+	inboundConfig, err = InboundBuilder(c.config, &fakeNodeInfo, socksTag)
+	if err != nil {
+		return err
+	}
+	err = c.addInbound(inboundConfig)
+	if err != nil {
+
+		return err
+	}
+	outBoundConfig, err = OutboundBuilder(c.config, &fakeNodeInfo, socksTag)
+	if err != nil {
+
+		return err
+	}
+	err = c.addOutbound(outBoundConfig)
+	if err != nil {
+
+		return err
 	}
 	return nil
 }
@@ -410,6 +466,8 @@ func (c *Controller) addNewUser(userInfo *[]api.UserInfo, nodeInfo *api.NodeInfo
 		users = c.buildSSUser(userInfo, nodeInfo.CypherMethod)
 	case "Shadowsocks-Plugin":
 		users = c.buildSSPluginUser(userInfo)
+	case "Http":
+		users = c.buildHttpUser(userInfo)
 	default:
 		return fmt.Errorf("unsupported node type: %s", nodeInfo.NodeType)
 	}
@@ -420,6 +478,10 @@ func (c *Controller) addNewUser(userInfo *[]api.UserInfo, nodeInfo *api.NodeInfo
 	}
 	log.Printf("%s Added %d new users", c.logPrefix(), len(*userInfo))
 	return nil
+}
+
+func CompareUserList(old, new *[]api.UserInfo) (deleted, added []api.UserInfo) {
+	return compareUserList(old,new)
 }
 
 func compareUserList(old, new *[]api.UserInfo) (deleted, added []api.UserInfo) {
@@ -618,7 +680,7 @@ func (c *Controller) certMonitor() error {
 				log.Print(err)
 			}
 			// Xray-core supports the OcspStapling certification hot renew
-			_, _, _, err = lego.RenewCert()
+			_, _, _, _, err = lego.RenewCert()
 			if err != nil {
 				log.Print(err)
 			}

@@ -1,6 +1,10 @@
 package sspanel
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/XrayR-project/XrayR/api"
+)
 
 // NodeInfoResponse is the response of node
 type NodeInfoResponse struct {
@@ -33,6 +37,7 @@ type CustomConfig struct {
 	Flow           string          `json:"flow"`
 	EnableREALITY  bool            `json:"enable_reality"`
 	RealityOpts    *REALITYConfig  `json:"reality-opts"`
+	RouteDns       *api.RouteDns   `json:"route_dns"`
 }
 
 // UserResponse is the response of user

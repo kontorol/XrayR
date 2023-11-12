@@ -28,7 +28,7 @@ func TestLegoDNSCert(t *testing.T) {
 		t.Error(err)
 	}
 
-	certPath, keyPath, err := lego.DNSCert()
+	certPath, keyPath,_, err := lego.DNSCert()
 	if err != nil {
 		t.Error(err)
 	}
@@ -46,7 +46,7 @@ func TestLegoHTTPCert(t *testing.T) {
 		t.Error(err)
 	}
 
-	certPath, keyPath, err := lego.HTTPCert()
+	certPath, keyPath, _, err := lego.HTTPCert()
 	if err != nil {
 		t.Error(err)
 	}
@@ -68,7 +68,7 @@ func TestLegoRenewCert(t *testing.T) {
 		t.Error(err)
 	}
 	lego.C.CertMode = "http"
-	certPath, keyPath, ok, err := lego.RenewCert()
+	certPath, keyPath, _, ok, err := lego.RenewCert()
 	if err != nil {
 		t.Error(err)
 	}
@@ -77,7 +77,7 @@ func TestLegoRenewCert(t *testing.T) {
 	t.Log(ok)
 
 	lego.C.CertMode = "dns"
-	certPath, keyPath, ok, err = lego.RenewCert()
+	certPath, keyPath, _, ok, err = lego.RenewCert()
 	if err != nil {
 		t.Error(err)
 	}

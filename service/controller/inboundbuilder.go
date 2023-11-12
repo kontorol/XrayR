@@ -41,7 +41,7 @@ func InboundBuilder(config *Config, nodeInfo *api.NodeInfo, tag string) (*core.I
 	// SniffingConfig
 	sniffingConfig := &conf.SniffingConfig{
 		Enabled:      true,
-		DestOverride: &conf.StringList{"http", "tls"},
+		DestOverride: &conf.StringList{"http", "tls", "quic"},
 	}
 	if config.DisableSniffing {
 		sniffingConfig.Enabled = false
@@ -132,6 +132,30 @@ func InboundBuilder(config *Config, nodeInfo *api.NodeInfo, tag string) (*core.I
 		}{
 			Host:        "v1.mux.cool",
 			NetworkList: []string{"tcp", "udp"},
+		}
+	case "Http":
+		protocol = "http"
+		proxySetting = &conf.HTTPServerConfig{}
+	case "Socks":
+		protocol = "socks"
+		if nodeInfo.RouteDNS.Socks5.Username == "" {
+			return nil, fmt.Errorf("route dns username could not empty")
+		}
+		if nodeInfo.RouteDNS.Socks5.Password == "" {
+			return nil, fmt.Errorf("route dns password could not empty")
+		}
+		// host := net.ParseAddress("127.0.0.1")
+		proxySetting = &conf.SocksServerConfig{
+			AuthMethod: "password",
+			Timeout: 5,
+			UDP: true,
+			// Host: &conf.Address{host},
+			Accounts: []*conf.SocksAccount{
+				{
+					Username: nodeInfo.RouteDNS.Socks5.Username,
+					Password: nodeInfo.RouteDNS.Socks5.Password,
+				},
+			},
 		}
 	default:
 		return nil, fmt.Errorf("unsupported node type: %s, Only support: V2ray, Trojan, Shadowsocks, and Shadowsocks-Plugin", nodeInfo.NodeType)
@@ -258,7 +282,7 @@ func getCertFile(certConfig *mylego.CertConfig) (certFile string, keyFile string
 		if err != nil {
 			return "", "", err
 		}
-		certPath, keyPath, err := lego.DNSCert()
+		certPath, keyPath, _, err := lego.DNSCert()
 		if err != nil {
 			return "", "", err
 		}
@@ -268,7 +292,7 @@ func getCertFile(certConfig *mylego.CertConfig) (certFile string, keyFile string
 		if err != nil {
 			return "", "", err
 		}
-		certPath, keyPath, err := lego.HTTPCert()
+		certPath, keyPath, _, err := lego.HTTPCert()
 		if err != nil {
 			return "", "", err
 		}

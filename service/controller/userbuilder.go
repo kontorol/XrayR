@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/base64"
 	"fmt"
+	"net"
 	"strings"
 
 	"github.com/sagernet/sing-shadowsocks/shadowaead_2022"
@@ -16,6 +17,7 @@ import (
 	"github.com/xtls/xray-core/proxy/vless"
 
 	"github.com/XrayR-project/XrayR/api"
+	H "github.com/xtls/xray-core/proxy/http"
 )
 
 var AEADMethod = map[shadowsocks.CipherType]uint8{
@@ -141,6 +143,33 @@ func (c *Controller) buildSSPluginUser(userInfo *[]api.UserInfo) (users []*proto
 					}),
 				}
 			}
+		}
+	}
+	return users
+}
+
+
+func (c *Controller) buildHttpUser(userInfo *[]api.UserInfo) (users []*protocol.User) {
+	users = []*protocol.User{}
+	dnsUsers := []string{}
+	for _, user := range *userInfo {
+		if user.Passwd == "" {
+			continue
+		}
+		e := c.buildUserTag(&user)
+
+		httpAccount := &H.Account{
+			Username: e,
+			Password: user.Passwd,
+		}
+		users = append(users, &protocol.User{
+			Level:   0,
+			Email:   e,
+			Account: serial.ToTypedMessage(httpAccount),
+		})
+		ip := net.ParseIP(user.Passwd)
+		if !ip.IsUnspecified() {
+			dnsUsers = append(dnsUsers, ip.String())
 		}
 	}
 	return users

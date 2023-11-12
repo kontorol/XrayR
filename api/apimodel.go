@@ -56,6 +56,7 @@ type NodeInfo struct {
 	NameServerConfig  []*conf.NameServerConfig
 	EnableREALITY     bool
 	REALITYConfig     *REALITYConfig
+	RouteDNS          *RouteDns
 }
 
 type UserInfo struct {
@@ -108,4 +109,33 @@ type REALITYConfig struct {
 	MaxClientVer     string
 	MaxTimeDiff      uint64
 	ShortIds         []string
+}
+
+type RouteDns struct {
+	Allow    RouteDnsConfig     `json:"allow"`
+	Block    RouteDnsConfig     `json:"block"`
+	AllowIPs RouteDnsConfig     `json:"allow-ip"`
+	Socks5   Socks5PanelOptions `json:"socks"`
+	Spoof4   string             `json:"spoof4"`
+	Spoof6   string             `json:"spoof6"`
+}
+
+type Socks5PanelOptions struct {
+	Username  string `json:"username"`
+	Password  string `json:"password"`
+	LocalAddr string `json:"local-addr"`
+
+	// When the resolver is configured with a name, not an IP, e.g. one.one.one.one:53
+	// this setting will resolve that name locally rather than on the SOCKS proxy. The
+	// name will be resolved either on the local system, or via the bootstrap-resolver
+	// if one is setup.
+	ResolveLocal  bool                   `json:"resolve-local"`
+	Socks5Address string                 `json:"address"`
+}
+
+type RouteDnsConfig struct {
+	Mode     string             `json:"type"`
+	Domains  []string           `json:"domains"`
+	Hosts    *conf.HostsWrapper `json:"hosts"`
+	AllowIPs conf.StringList    `json:"ips"`
 }

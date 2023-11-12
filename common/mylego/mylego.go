@@ -41,7 +41,7 @@ func (l *LegoCMD) getCertConfig() *CertConfig {
 }
 
 // DNSCert cert a domain using DNS API
-func (l *LegoCMD) DNSCert() (CertPath string, KeyPath string, err error) {
+func (l *LegoCMD) DNSCert() (CertPath string, KeyPath string, CaPath string, err error) {
 	defer func() (string, string, error) {
 		// Handle any error
 		if r := recover(); r != nil {
@@ -64,24 +64,24 @@ func (l *LegoCMD) DNSCert() (CertPath string, KeyPath string, err error) {
 	}
 
 	// First check if the certificate exists
-	CertPath, KeyPath, err = checkCertFile(l.C.CertDomain)
+	CertPath, KeyPath, CaPath, err = checkCertFile(l.C.CertDomain)
 	if err == nil {
-		return CertPath, KeyPath, err
+		return CertPath, KeyPath, CaPath, err
 	}
 
 	err = l.Run()
 	if err != nil {
-		return "", "", err
+		return "", "", "", err
 	}
-	CertPath, KeyPath, err = checkCertFile(l.C.CertDomain)
+	CertPath, KeyPath, CaPath, err = checkCertFile(l.C.CertDomain)
 	if err != nil {
-		return "", "", err
+		return "", "", "", err
 	}
-	return CertPath, KeyPath, nil
+	return CertPath, KeyPath, CaPath, nil
 }
 
 // HTTPCert cert a domain using http methods
-func (l *LegoCMD) HTTPCert() (CertPath string, KeyPath string, err error) {
+func (l *LegoCMD) HTTPCert() (CertPath string, KeyPath string, CaPath string, err error) {
 	defer func() (string, string, error) {
 		// Handle any error
 		if r := recover(); r != nil {
@@ -99,26 +99,26 @@ func (l *LegoCMD) HTTPCert() (CertPath string, KeyPath string, err error) {
 	}()
 
 	// First check if the certificate exists
-	CertPath, KeyPath, err = checkCertFile(l.C.CertDomain)
+	CertPath, KeyPath, CaPath, err = checkCertFile(l.C.CertDomain)
 	if err == nil {
-		return CertPath, KeyPath, err
+		return CertPath, KeyPath, CaPath, err
 	}
 
 	err = l.Run()
 	if err != nil {
-		return "", "", err
+		return "", "", "", err
 	}
 
-	CertPath, KeyPath, err = checkCertFile(l.C.CertDomain)
+	CertPath, KeyPath, CaPath, err = checkCertFile(l.C.CertDomain)
 	if err != nil {
-		return "", "", err
+		return "", "", "", err
 	}
 
-	return CertPath, KeyPath, nil
+	return CertPath, KeyPath, CaPath, nil
 }
 
 // RenewCert renew a domain cert
-func (l *LegoCMD) RenewCert() (CertPath string, KeyPath string, ok bool, err error) {
+func (l *LegoCMD) RenewCert() (CertPath string, KeyPath string, CaPath string, ok bool, err error) {
 	defer func() (string, string, bool, error) {
 		// Handle any error
 		if r := recover(); r != nil {
@@ -140,7 +140,7 @@ func (l *LegoCMD) RenewCert() (CertPath string, KeyPath string, ok bool, err err
 		return
 	}
 
-	CertPath, KeyPath, err = checkCertFile(l.C.CertDomain)
+	CertPath, KeyPath, CaPath, err = checkCertFile(l.C.CertDomain)
 	if err != nil {
 		return
 	}
@@ -148,16 +148,21 @@ func (l *LegoCMD) RenewCert() (CertPath string, KeyPath string, ok bool, err err
 	return
 }
 
-func checkCertFile(domain string) (string, string, error) {
+func checkCertFile(domain string) (string, string, string, error) {
 	keyPath := path.Join(defaultPath, "certificates", fmt.Sprintf("%s.key", domain))
 	certPath := path.Join(defaultPath, "certificates", fmt.Sprintf("%s.crt", domain))
+	caPath := path.Join(defaultPath, "certificates", fmt.Sprintf("%s.issuer.crt", domain))
 	if _, err := os.Stat(keyPath); os.IsNotExist(err) {
-		return "", "", fmt.Errorf("cert key failed: %s", domain)
+		return "", "", "", fmt.Errorf("cert key failed: %s", domain)
 	}
 	if _, err := os.Stat(certPath); os.IsNotExist(err) {
-		return "", "", fmt.Errorf("cert cert failed: %s", domain)
+		return "", "", "", fmt.Errorf("cert cert failed: %s", domain)
 	}
 	absKeyPath, _ := filepath.Abs(keyPath)
 	absCertPath, _ := filepath.Abs(certPath)
-	return absCertPath, absKeyPath, nil
+	absCaPath, err := filepath.Abs(caPath)
+	if err != nil {
+		absCaPath = ""
+	}
+	return absCertPath, absKeyPath, absCaPath, nil
 }
