@@ -116,8 +116,7 @@ type RouteDns struct {
 	Block    RouteDnsConfig     `json:"block"`
 	AllowIPs RouteDnsConfig     `json:"allow-ip"`
 	Socks5   Socks5PanelOptions `json:"socks"`
-	Spoof4   string             `json:"spoof4"`
-	Spoof6   string             `json:"spoof6"`
+	Spoof    []string           `json:"spoof"`
 }
 
 type Socks5PanelOptions struct {
