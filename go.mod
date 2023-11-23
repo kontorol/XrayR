@@ -171,6 +171,7 @@ require (
 	github.com/sacloud/go-http v0.1.6 // indirect
 	github.com/sacloud/iaas-api-go v1.11.1 // indirect
 	github.com/sacloud/packages-go v0.0.9 // indirect
+	github.com/sagernet/wireguard-go v0.0.0-20221116151939-c99467f53f2c // indirect
 	github.com/sagikazarmark/locafero v0.3.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/scaleway/scaleway-sdk-go v1.0.0-beta.17 // indirect
@@ -194,8 +195,6 @@ require (
 	github.com/ultradns/ultradns-go-sdk v1.5.0-20230427130837-23c9b0c // indirect
 	github.com/v2fly/ss-bloomring v0.0.0-20210312155135-28617310f63e // indirect
 	github.com/vinyldns/go-vinyldns v0.9.16 // indirect
-	github.com/vishvananda/netlink v1.2.1-beta.2.0.20230316163032-ced5aaba43e3 // indirect
-	github.com/vishvananda/netns v0.0.4 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
@@ -218,8 +217,6 @@ require (
 	golang.org/x/sys v0.14.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/tools v0.15.0 // indirect
-	golang.zx2c4.com/wintun v0.0.0-20230126152724-0fa3db229ce2 // indirect
-	golang.zx2c4.com/wireguard v0.0.0-20231022001213-2e0774f246fb // indirect
 	google.golang.org/api v0.143.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20231030173426-d783a09b4405 // indirect
@@ -236,4 +233,4 @@ require (
 
 replace github.com/exoscale/egoscale => github.com/exoscale/egoscale v0.102.0
 
-replace github.com/xtls/xray-core => github.com/kontorol/xray-core v1.8.5-0.20231112215239-65402f46f25d
+replace github.com/xtls/xray-core => github.com/i-panel/xray-core v1.8.5-0.20231112215239-65402f46f25d
