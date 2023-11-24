@@ -149,12 +149,12 @@ jobs:
             cp ${GITHUB_WORKSPACE}/release/config/custom_inbound.json ./build_assets/custom_inbound.json
             cp ${GITHUB_WORKSPACE}/release/config/rulelist ./build_assets/rulelist
             cp ${GITHUB_WORKSPACE}/release/config/config.yml.example ./build_assets/config.yml
-            LIST=('geoip geoip geoip' 'domain-list-community dlc geosite')
+            LIST=('geoip geoip' 'geosite geosite')
             for i in "${LIST[@]}"
             do
               INFO=($(echo $i | awk 'BEGIN{FS=" ";OFS=" "} {print $1,$2,$3}'))
-              DOWNLOAD_URL="https://raw.githubusercontent.com/v2fly/${INFO[0]}/release/${INFO[1]}.dat"
-              FILE_NAME="${INFO[2]}.dat"
+              DOWNLOAD_URL="https://raw.githubusercontent.com/chocolate4u/Iran-v2ray-rules/release/${INFO[0]}.dat"
+              FILE_NAME="${INFO[1]}.dat"
               echo -e "Downloading ${DOWNLOAD_URL}..."
               curl -L "${DOWNLOAD_URL}" -o ./build_assets/${FILE_NAME}
               echo -e "Verifying HASH key..."
