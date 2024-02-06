@@ -798,6 +798,13 @@ func (c *APIClient) ParseSSPanelNodeInfo(nodeInfoResponse *NodeInfoResponse) (*a
 		if nodeConfig.Network != "" {
 			transportProtocol = nodeConfig.Network // try to read transport protocol from config
 		}
+	case "Shadowsocks-Plugin":
+
+		transportProtocol = "tcp"
+		// Select transport protocol
+		if nodeConfig.Network != "" {
+			transportProtocol = nodeConfig.Network // try to read transport protocol from config
+		}
 	}
 
 	// parse reality config
