@@ -6,12 +6,11 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"errors"
+	"log"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
-
-	log "github.com/sirupsen/logrus"
 
 	"github.com/go-acme/lego/v4/certcrypto"
 	"github.com/go-acme/lego/v4/lego"
@@ -190,6 +189,7 @@ func generatePrivateKey(file string, keyType certcrypto.KeyType) (crypto.Private
 	if err != nil {
 		return nil, err
 	}
+
 	defer certOut.Close()
 
 	pemKey := certcrypto.PEMBlock(privateKey)

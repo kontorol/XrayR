@@ -151,7 +151,7 @@ func (c *Controller) Start() error {
 	)
 
 	// Check cert service in need
-	if c.nodeInfo.EnableTLS && c.config.EnableREALITY == false {
+	if c.nodeInfo.EnableTLS && !c.config.EnableREALITY {
 		c.tasks = append(c.tasks, periodicTask{
 			tag: "cert monitor",
 			Periodic: &task.Periodic{
@@ -162,7 +162,7 @@ func (c *Controller) Start() error {
 
 	// Start periodic tasks
 	for i := range c.tasks {
-		c.logger.Printf("Start %s periodic task", c.tasks[i].tag)
+		c.logger.Printf("%s Start %s periodic task", c.logPrefix(), c.tasks[i].tag)
 		go c.tasks[i].Start()
 	}
 
@@ -174,7 +174,7 @@ func (c *Controller) Close() error {
 	for i := range c.tasks {
 		if c.tasks[i].Periodic != nil {
 			if err := c.tasks[i].Periodic.Close(); err != nil {
-				c.logger.Panicf("%s periodic task close failed: %s", c.tasks[i].tag, err)
+				c.logger.Panicf("%s %s periodic task close failed: %s", c.logPrefix(), c.tasks[i].tag, err)
 			}
 		}
 	}
@@ -304,7 +304,7 @@ func (c *Controller) nodeInfoMonitor() (err error) {
 				}
 			}
 		}
-		c.logger.Printf("%d user deleted, %d user added", len(deleted), len(added))
+		c.logger.Printf("%s %d user deleted, %d user added", c.logPrefix(), len(deleted), len(added))
 	}
 	c.userList = newUserInfo
 	return nil
@@ -470,7 +470,7 @@ func (c *Controller) addNewUser(userInfo *[]api.UserInfo, nodeInfo *api.NodeInfo
 	case "Trojan":
 		users = c.buildTrojanUser(userInfo)
 	case "Shadowsocks":
-		users = c.buildSSUser(userInfo, nodeInfo.CypherMethod)
+		users = c.buildSSUser(userInfo, nodeInfo.CipherMethod)
 	case "Shadowsocks-Plugin":
 		users = c.buildSSPluginUser(userInfo)
 	case "Http":
@@ -483,7 +483,7 @@ func (c *Controller) addNewUser(userInfo *[]api.UserInfo, nodeInfo *api.NodeInfo
 	if err != nil {
 		return err
 	}
-	c.logger.Printf("Added %d new users", len(*userInfo))
+	c.logger.Printf("%s Added %d new users", c.logPrefix(), len(*userInfo))
 	return nil
 }
 
@@ -563,7 +563,7 @@ func (c *Controller) userInfoMonitor() (err error) {
 	}
 	// Unlock users
 	if c.config.AutoSpeedLimitConfig.Limit > 0 && len(c.limitedUsers) > 0 {
-		c.logger.Printf("Limited users:")
+		c.logger.Printf("%s Limited users:", c.logPrefix())
 		toReleaseUsers := make([]api.UserInfo, 0)
 		for user, limitInfo := range c.limitedUsers {
 			if time.Now().Unix() > limitInfo.end {
@@ -651,7 +651,7 @@ func (c *Controller) userInfoMonitor() (err error) {
 		if err = c.apiClient.ReportNodeOnlineUsers(onlineDevice); err != nil {
 			c.logger.Print(err)
 		} else {
-			c.logger.Printf("Report %d online users", len(*onlineDevice))
+			c.logger.Printf("%s Report %d online users", c.logPrefix(), len(*onlineDevice))
 		}
 	}
 
@@ -662,7 +662,7 @@ func (c *Controller) userInfoMonitor() (err error) {
 		if err = c.apiClient.ReportIllegal(detectResult); err != nil {
 			c.logger.Print(err)
 		} else {
-			c.logger.Printf("Report %d illegal behaviors", len(*detectResult))
+			c.logger.Printf("%s Report %d illegal behaviors", c.logPrefix(), len(*detectResult))
 		}
 
 	}
@@ -673,13 +673,13 @@ func (c *Controller) buildNodeTag() string {
 	return fmt.Sprintf("%s_%s_%d", c.nodeInfo.NodeType, c.config.ListenIP, c.nodeInfo.Port)
 }
 
-// func (c *Controller) logPrefix() string {
-// 	return fmt.Sprintf("[%s] %s(ID=%d)", c.clientInfo.APIHost, c.nodeInfo.NodeType, c.nodeInfo.NodeID)
-// }
+func (c *Controller) logPrefix() string {
+	return fmt.Sprintf("[%s] %s(ID=%d)", c.clientInfo.APIHost, c.nodeInfo.NodeType, c.nodeInfo.NodeID)
+}
 
 // Check Cert
 func (c *Controller) certMonitor() error {
-	if c.nodeInfo.EnableTLS && c.config.EnableREALITY == false {
+	if c.nodeInfo.EnableTLS && !c.config.EnableREALITY{
 		switch c.config.CertConfig.CertMode {
 		case "dns", "http", "tls":
 			lego, err := mylego.New(c.config.CertConfig)

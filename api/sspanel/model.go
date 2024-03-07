@@ -8,8 +8,6 @@ import (
 
 // NodeInfoResponse is the response of node
 type NodeInfoResponse struct {
-	Group           int             `json:"node_group"`
-	Class           int             `json:"node_class"`
 	SpeedLimit      float64         `json:"node_speedlimit"`
 	TrafficRate     float64         `json:"traffic_rate"`
 	Sort            int             `json:"sort"`
@@ -32,6 +30,7 @@ type CustomConfig struct {
 	Obfs           string          `json:"obfs"`
 	Header         json.RawMessage `json:"header"`
 	AllowInsecure  string          `json:"allow_insecure"`
+	ServerKey      string          `json:"server_key"`
 	Servicename    string          `json:"servicename"`
 	EnableXtls     string          `json:"enable_xtls"`
 	Flow           string          `json:"flow"`
@@ -56,6 +55,7 @@ type UserResponse struct {
 type Response struct {
 	Ret  uint            `json:"ret"`
 	Data json.RawMessage `json:"data"`
+	Msg  string          `json:"msg"`
 }
 
 // PostData is the data structure of post data

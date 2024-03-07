@@ -15,7 +15,6 @@ import (
 	_ "github.com/xtls/xray-core/app/log/command"
 	_ "github.com/xtls/xray-core/app/proxyman/command"
 	_ "github.com/xtls/xray-core/app/stats/command"
-
 	// Other optional features.
 	_ "github.com/xtls/xray-core/app/dns"
 	_ "github.com/xtls/xray-core/app/log"
@@ -49,7 +48,6 @@ import (
 	_ "github.com/xtls/xray-core/transport/internet/tls"
 	_ "github.com/xtls/xray-core/transport/internet/udp"
 	_ "github.com/xtls/xray-core/transport/internet/websocket"
-
 	// Transport headers
 	_ "github.com/xtls/xray-core/transport/internet/headers/http"
 	_ "github.com/xtls/xray-core/transport/internet/headers/noop"
@@ -58,7 +56,6 @@ import (
 	_ "github.com/xtls/xray-core/transport/internet/headers/utp"
 	_ "github.com/xtls/xray-core/transport/internet/headers/wechat"
 	_ "github.com/xtls/xray-core/transport/internet/headers/wireguard"
-
 	// JSON & TOML & YAML
 	_ "github.com/xtls/xray-core/main/json"
 	_ "github.com/xtls/xray-core/main/toml"

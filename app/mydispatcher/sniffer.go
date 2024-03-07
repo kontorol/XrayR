@@ -2,6 +2,7 @@ package mydispatcher
 
 import (
 	"context"
+	"errors"
 
 	"github.com/xtls/xray-core/common"
 	"github.com/xtls/xray-core/common/net"
@@ -62,7 +63,7 @@ func (s *Sniffer) Sniff(c context.Context, payload []byte, network net.Network) 
 			continue
 		}
 		result, err := s(c, payload)
-		if err == common.ErrNoClue {
+		if errors.Is(err, common.ErrNoClue) {
 			pendingSniffer = append(pendingSniffer, si)
 			continue
 		}
@@ -89,7 +90,7 @@ func (s *Sniffer) SniffMetadata(c context.Context) (SniffResult, error) {
 			continue
 		}
 		result, err := s(c, nil)
-		if err == common.ErrNoClue {
+		if errors.Is(err, common.ErrNoClue) {
 			pendingSniffer = append(pendingSniffer, si)
 			continue
 		}

@@ -25,7 +25,6 @@ type Config struct {
 	SpeedLimit          float64 `mapstructure:"SpeedLimit"`
 	DeviceLimit         int     `mapstructure:"DeviceLimit"`
 	RuleListPath        string  `mapstructure:"RuleListPath"`
-	DisableCustomConfig bool    `mapstructure:"DisableCustomConfig"`
 }
 
 // NodeStatus Node status
@@ -37,7 +36,7 @@ type NodeStatus struct {
 }
 
 type NodeInfo struct {
-	NodeType          string // Must be V2ray, Trojan, and Shadowsocks
+	NodeType          string // Must be V2ray, Trojan, Shadowsocks and Shadowsocks2022
 	NodeID            int
 	Port              uint32
 	SpeedLimit        uint64 // Bps
@@ -49,7 +48,7 @@ type NodeInfo struct {
 	EnableTLS         bool
 	EnableVless       bool
 	VlessFlow         string
-	CypherMethod      string
+	CipherMethod      string
 	ServerKey         string
 	ServiceName       string
 	Header            json.RawMessage
