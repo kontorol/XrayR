@@ -200,14 +200,13 @@ func InboundBuilder(config *Config, nodeInfo *api.NodeInfo, tag string) (*core.I
 
 		streamSetting.HTTPSettings = httpSettings
 	case "httpupgrade":
-		hosts := conf.StringList{nodeInfo.Host}
 
-		httpSettings := &conf.HTTPConfig{
-			Host: &hosts,
+		httpSettings := &conf.HttpUpgradeConfig{
+			Host: nodeInfo.Host,
 			Path: nodeInfo.Path,
 		}
 
-		streamSetting.HTTPSettings = httpSettings
+		streamSetting.HTTPUPGRADESettings = httpSettings
 	case "grpc":
 		grpcSettings := &conf.GRPCConfig{
 			ServiceName: nodeInfo.ServiceName,
