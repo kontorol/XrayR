@@ -1193,8 +1193,8 @@ github.com/hashicorp/memberlist v0.5.0/go.mod h1:yvyXLpo0QaGE59Y7hDTsTzDD25JYBZ4
 github.com/hashicorp/serf v0.8.2/go.mod h1:6hOLApaqBFA1NXqRQAsxw9QxuDEvNxSQRwA/JwenrHc=
 github.com/hashicorp/serf v0.10.1/go.mod h1:yL2t6BqATOLGc5HF7qbFkTfXoPIY0WZdWHfEvMqbG+4=
 github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpOxQnU=
-github.com/i-panel/xray-core v1.8.5-0.20240314004827-7cd9388c54ba h1:MW1yBbyeICcCJWIm6l8SWzJMJ7KyqkN+Bz7sG4rd9Jg=
-github.com/i-panel/xray-core v1.8.5-0.20240314004827-7cd9388c54ba/go.mod h1:XDE4f422qJKAU3hNDSNZyWrOHvn9kF8UHVdyOzU38rc=
+github.com/i-panel/xray-core v1.8.5-0.20240319084121-e77df92f005e h1:g3CPlsB0tsq3Uf3PP+zjHXjCfNLo1cPTC6clj2eVa2c=
+github.com/i-panel/xray-core v1.8.5-0.20240319084121-e77df92f005e/go.mod h1:XDE4f422qJKAU3hNDSNZyWrOHvn9kF8UHVdyOzU38rc=
 github.com/iancoleman/strcase v0.2.0/go.mod h1:iwCmte+B7n89clKwxIoIXy/HfoL7AsD47ZCWhYzw7ho=
 github.com/ianlancetaylor/demangle v0.0.0-20181102032728-5e5cf60278f6/go.mod h1:aSSvb/t6k1mPoxDqO4vJh6VOCGPwU4O0C2/Eqndh1Sc=
 github.com/ianlancetaylor/demangle v0.0.0-20200824232613-28f6c0f3b639/go.mod h1:aSSvb/t6k1mPoxDqO4vJh6VOCGPwU4O0C2/Eqndh1Sc=
