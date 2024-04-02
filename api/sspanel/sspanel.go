@@ -36,10 +36,6 @@ type APIClient struct {
 	eTags            map[string]string
 }
 
-// ReportNodeStatus implements api.API.
-func (*APIClient) ReportNodeStatus(nodeStatus *api.NodeStatus) (err error) {
-	panic("unimplemented")
-}
 
 // New create api instance
 func New(apiConfig *api.Config) *APIClient {
@@ -533,4 +529,53 @@ func (c *APIClient) ParseSSPanelNodeInfo(nodeInfoResponse *NodeInfoResponse) (*a
 	}
 
 	return nodeInfo, nil
+}
+
+// ReportNodeStatus reports the node status to the ssPanel
+func (c *APIClient) ReportNodeStatus(nodeStatus *api.NodeStatus) (err error) {
+	// Determine whether a status report is in need
+	if compareVersion(c.version, "2023.2") == -1 {
+		path := fmt.Sprintf("/mod_mu/nodes/%d/info", c.NodeID)
+		systemLoad := SystemLoad{
+			Uptime: strconv.FormatUint(nodeStatus.Uptime, 10),
+			Load:   fmt.Sprintf("%.2f %.2f %.2f", nodeStatus.CPU/100, nodeStatus.Mem/100, nodeStatus.Disk/100),
+		}
+
+		res, err := c.client.R().
+			SetBody(systemLoad).
+			SetResult(&Response{}).
+			ForceContentType("application/json").
+			Post(path)
+
+		_, err = c.parseResponse(res, path, err)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// compareVersion, version1 > version2 return 1, version1 < version2 return -1, 0 means equal
+func compareVersion(version1, version2 string) int {
+	n, m := len(version1), len(version2)
+	i, j := 0, 0
+	for i < n || j < m {
+		x := 0
+		for ; i < n && version1[i] != '.'; i++ {
+			x = x*10 + int(version1[i]-'0')
+		}
+		i++ // jump dot
+		y := 0
+		for ; j < m && version2[j] != '.'; j++ {
+			y = y*10 + int(version2[j]-'0')
+		}
+		j++ // jump dot
+		if x > y {
+			return 1
+		}
+		if x < y {
+			return -1
+		}
+	}
+	return 0
 }
