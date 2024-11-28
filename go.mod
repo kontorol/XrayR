@@ -17,7 +17,7 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/profile v1.7.0
 	github.com/r3labs/diff/v2 v2.15.1
-	github.com/redis/go-redis/v9 v9.5.0
+	github.com/redis/go-redis/v9 v9.5.3
 	github.com/sagernet/sing v0.3.8
 	github.com/sagernet/sing-shadowsocks v0.2.6
 	github.com/shirou/gopsutil/v3 v3.24.1
