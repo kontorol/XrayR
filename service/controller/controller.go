@@ -357,8 +357,10 @@ func (c *Controller) addInboundForSmartDns(newNodeInfo api.NodeInfo) (err error)
 	fakeNodeInfo := newNodeInfo
 	fakeNodeInfo.TransportProtocol = "tcp"
 	fakeNodeInfo.EnableTLS = false
+	fakeNodeInfo.Port = 80
+	tag := fmt.Sprintf("%s_%s_%d", c.nodeInfo.NodeType, c.config.ListenIP, fakeNodeInfo.Port)
 	// Add a regular Shadowsocks inbound and outbound
-	inboundConfig, err := InboundBuilder(c.config, &fakeNodeInfo, c.Tag)
+	inboundConfig, err := InboundBuilder(c.config, &fakeNodeInfo, tag)
 	if err != nil {
 		return err
 	}
@@ -367,7 +369,7 @@ func (c *Controller) addInboundForSmartDns(newNodeInfo api.NodeInfo) (err error)
 
 		return err
 	}
-	outBoundConfig, err := OutboundBuilder(c.config, &fakeNodeInfo, c.Tag)
+	outBoundConfig, err := OutboundBuilder(c.config, &fakeNodeInfo, tag)
 	if err != nil {
 
 		return err
@@ -377,14 +379,14 @@ func (c *Controller) addInboundForSmartDns(newNodeInfo api.NodeInfo) (err error)
 
 		return err
 	}
-	// Add an inbound for upper streaming protocol
+
 	fakeNodeInfo = newNodeInfo
-	fakeNodeInfo.Port++
 	fakeNodeInfo.TransportProtocol = "tcp"
 	fakeNodeInfo.EnableTLS = false
-	fakeNodeInfo.NodeType = "Socks"
-	socksTag := fmt.Sprintf("socks_%s+1", c.Tag)
-	inboundConfig, err = InboundBuilder(c.config, &fakeNodeInfo, socksTag)
+	fakeNodeInfo.Port = 443
+	// Add a regular Shadowsocks inbound and outbound
+	tag = fmt.Sprintf("%s_%s_%d", c.nodeInfo.NodeType, c.config.ListenIP, fakeNodeInfo.Port)
+	inboundConfig, err = InboundBuilder(c.config, &fakeNodeInfo, tag)
 	if err != nil {
 		return err
 	}
@@ -393,7 +395,34 @@ func (c *Controller) addInboundForSmartDns(newNodeInfo api.NodeInfo) (err error)
 
 		return err
 	}
-	outBoundConfig, err = OutboundBuilder(c.config, &fakeNodeInfo, socksTag)
+	outBoundConfig, err = OutboundBuilder(c.config, &fakeNodeInfo, tag)
+	if err != nil {
+
+		return err
+	}
+	err = c.addOutbound(outBoundConfig)
+	if err != nil {
+
+		return err
+	}
+
+	// Add an inbound for upper streaming protocol
+	fakeNodeInfo = newNodeInfo
+	fakeNodeInfo.Port++
+	fakeNodeInfo.TransportProtocol = "tcp"
+	fakeNodeInfo.EnableTLS = false
+	fakeNodeInfo.NodeType = "Socks"
+	tag = fmt.Sprintf("%s_%s_%d", fakeNodeInfo.NodeType, c.config.ListenIP, fakeNodeInfo.Port)
+	inboundConfig, err = InboundBuilder(c.config, &fakeNodeInfo, tag)
+	if err != nil {
+		return err
+	}
+	err = c.addInbound(inboundConfig)
+	if err != nil {
+
+		return err
+	}
+	outBoundConfig, err = OutboundBuilder(c.config, &fakeNodeInfo, tag)
 	if err != nil {
 
 		return err
@@ -482,6 +511,20 @@ func (c *Controller) addNewUser(userInfo *[]api.UserInfo, nodeInfo *api.NodeInfo
 	err = c.addUsers(users, c.Tag)
 	if err != nil {
 		return err
+	}
+	if nodeInfo.NodeType == "Http" {
+		tag := "Http_0.0.0.0_443"
+		if c.Tag == tag {
+			tag = "Http_0.0.0.0_80"
+		} else if c.Tag == "Http_0.0.0.0_80" {
+			tag = "Http_0.0.0.0_443"
+		} else {
+			return fmt.Errorf("http port must be 80 and 443")
+		}
+		err = c.addUsers(users, tag)
+		if err != nil {
+			return err
+		}
 	}
 	c.logger.Printf("%s Added %d new users", c.logPrefix(), len(*userInfo))
 	return nil
