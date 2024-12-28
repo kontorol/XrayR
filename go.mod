@@ -300,4 +300,4 @@ require (
 
 replace github.com/exoscale/egoscale => github.com/exoscale/egoscale v0.102.3
 
-replace github.com/xtls/xray-core => github.com/i-panel/xray-core v1.8.5-0.20241109033535-1be9fc9c206a
+replace github.com/xtls/xray-core => github.com/i-panel/xray-core v1.8.5-0.20241228005204-41d93befc44d
